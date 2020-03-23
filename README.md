@@ -1,1 +1,1 @@
-# Selenium_python_kourse
+# Selenium_python
