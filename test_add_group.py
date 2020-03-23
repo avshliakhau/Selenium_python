@@ -2,7 +2,7 @@
 from selenium import webdriver
 import unittest
 
-class tast_add_grou(unittest.TestCase):
+class tast_add_group(unittest.TestCase):
     def setUp(self):
         self.wd = webdriver.Firefox()
         self.wd.implicitly_wait(30)
