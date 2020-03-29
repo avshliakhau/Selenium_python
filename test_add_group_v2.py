@@ -1,68 +1,23 @@
 # -*- coding: utf-8 -*--
-from selenium import webdriver
+import pytest
 from group import Group
 from application import Application
-import unittest, time
-
-class tast_add_group(unittest.TestCase):
-    def setUp(self):
-        self.Application()
 
 
-    # def open_home_page(self):
-    #     wd = self.wd
-    #     wd.get("http://localhost/addressbook/")
-    #
-    # def login(self, username, password):
-    #     wd = self.wd
-    #     self.open_home_page()
-    #     wd.find_element_by_name("user").click()
-    #     wd.find_element_by_name("user").clear()
-    #     wd.find_element_by_name("user").send_keys(username)
-    #     wd.find_element_by_name("pass").click()
-    #     wd.find_element_by_name("pass").clear()
-    #     wd.find_element_by_name("pass").send_keys(password)
-    #     wd.find_element_by_xpath("//input[@value='Login']").click()
-    #
-    # def open_groups_page(self):
-    #     wd = self.wd
-    #     wd.find_element_by_link_text("groups").click()
-    #
-    # def create_group(self, group):
-    #     wd = self.wd
-    #     self.open_groups_page()
-    #     wd.find_element_by_name("new").click()
-    #     wd.find_element_by_name("group_name").click()
-    #     wd.find_element_by_name("group_name").clear()
-    #     wd.find_element_by_name("group_name").send_keys(group.name)
-    #     wd.find_element_by_name("group_header").clear()
-    #     wd.find_element_by_name("group_header").send_keys(group.header)
-    #     wd.find_element_by_name("group_footer").clear()
-    #     wd.find_element_by_name("group_footer").send_keys(group.footer)
-    #     wd.find_element_by_name("submit").click()
-    #     self.return_to_groups_page()
-    #
-    # def return_to_groups_page(self):
-    #     wd = self.wd
-    #     wd.find_element_by_link_text("groups").click()
-    #
-    # def logout(self):
-    #     wd = self.wd
-    #     wd.find_element_by_link_text("Logout").click()
+@pytest.fixture
+def app(request):
+    fixture = Application()
+    request.addfinalizer(fixture.destroy)
+    return fixture
 
-    def test_add_group1(self):
-        self.app.login(username="admin", password="secret")
-        self.app.create_group(Group(name="Group #1", header="Header #1", footer="Footer #1"))
-        self.app.logout()
 
-    def test_add_group2(self):
-        self.app.login(username="admin", password="secret")
-        self.app.create_group(Group(name="Group #2", header="Header #2", footer="Footer #2"))
-        self.app.logout()
+def test_add_group1(app):
+    app.login(username="admin", password="secret")
+    app.create_group(Group(name="Group #1", header="Header #1", footer="Footer #1"))
+    app.logout()
 
-    # time.sleep(10)
-    def tearDown(self):
-        self.app.destroy()
+def test_add_group2(app):
+    app.login(username="admin", password="secret")
+    app.create_group(Group(name="Group #2", header="Header #2", footer="Footer #2"))
+    app.logout()
 
-if __name__ == "__main__":
-    unittest.main()
