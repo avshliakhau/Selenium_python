@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import unittest
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
-import unittest, time
-from contact import Contact
+
+from model.contact import Contact
+
 
 class test_add_contact(unittest.TestCase):
     def setUp(self):
