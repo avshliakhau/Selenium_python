@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*--
 import pytest
-
 from fixture.application import Application
 from model.group import Group
 
@@ -13,16 +12,16 @@ def app(request):
 
 
 def test_add_group1(app):
-    app.login(username="admin", password="secret")
+    app.session.login(username="admin", password="secret")
     app.create_group(Group(name="Group #1", header="Header #1", footer="Footer #1"))
-    app.logout()
+    app.session.logout()
 
 def test_add_group2(app):
-    app.login(username="admin", password="secret")
+    app.session.login(username="admin", password="secret")
     app.create_group(Group(name="Group #2", header="Header #2", footer="Footer #2"))
-    app.logout()
+    app.session.logout()
 
 def test_add_group3(app):
-    app.login(username="admin", password="secret")
+    app.session.login(username="admin", password="secret")
     app.create_group(Group(name="Group #3", header="Header #3", footer="Footer #3"))
-    app.logout()
+    app.session.logout()
