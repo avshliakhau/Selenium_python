@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import pytest
 from fixture.applic import Application
 from model.contact import Contact
@@ -23,4 +22,3 @@ def test_add_contact2(app):
     app.create_contact(Contact(firstname="Maks", lastname="Second", address="Brest, Moskowskay str. 55",
                                         mobile="+375336007000", email="ser35@bk.ru", byear="1990"))
     app.logout()
-
