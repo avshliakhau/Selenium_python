@@ -1,7 +1,14 @@
 from model.contact import Contact
-
+import time
 
 def test_edit_contact(app):
-    app.session.login(username="admin", password="secret")
-    app.contact.edit_contact(Contact(firstname="firstnameEdit", lastname="lastnameEdit", address="addressEdit", mobile="+Edit", email="edit@inbox.ru", byear="1990"))
-    app.session.logout()
+    # app.session.login(username="admin", password="secret")
+    app.contact.edit_contact(Contact(firstname="Edit", lastname="Edit", mobile="+Edit", byear="1999"))
+    # time.sleep(5)
+    # app.session.logout()
+
+def test_edit_contacttoo(app):
+    # app.session.login(username="admin", password="secret")
+    app.contact.edit_contact(Contact(firstname="777Edit", byear="2020"))
+    # time.sleep(5)
+    # app.session.logout()

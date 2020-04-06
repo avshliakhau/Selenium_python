@@ -10,7 +10,7 @@ def app(request):
         fixture = Application()
         # fixture.session.login(username="admin", password="secret")
     else:
-        if not fixture.is_valid():
+        if not fixture.is_valid:
             fixture = Application()
     fixture.session.ensure_login(username="admin", password="secret")
     # fixture.session.login(username="admin", password="secret")

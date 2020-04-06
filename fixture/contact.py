@@ -21,30 +21,26 @@ class ContactHelper:
 
     def contact_form(self, contact):
         wd = self.app.wd
-        wd.find_element_by_name("firstname").click()
-        wd.find_element_by_name("firstname").clear()
-        wd.find_element_by_name("firstname").send_keys(contact.firstname)
-        wd.find_element_by_name("lastname").click()
-        wd.find_element_by_name("lastname").clear()
-        wd.find_element_by_name("lastname").send_keys(contact.lastname)
-        wd.find_element_by_name("address").click()
-        wd.find_element_by_name("address").clear()
-        wd.find_element_by_name("address").send_keys(contact.address)
-        wd.find_element_by_name("mobile").click()
-        wd.find_element_by_name("mobile").clear()
-        wd.find_element_by_name("mobile").send_keys(contact.mobile)
-        wd.find_element_by_name("email").click()
-        wd.find_element_by_name("email").clear()
-        wd.find_element_by_name("email").send_keys(contact.email)
-        wd.find_element_by_name("byear").click()
-        wd.find_element_by_name("byear").clear()
-        wd.find_element_by_name("byear").send_keys(contact.byear)
+        # self.type_cont(contact)
+        self.type_cont("firstname", contact.firstname)
+        self.type_cont("lastname", contact.lastname)
+        self.type_cont("address", contact.address)
+        self.type_cont("mobile", contact.mobile)
+        self.type_cont("email", contact.email)
+        self.type_cont("byear", contact.byear)
+
+    def type_cont(self, contact_data, text):
+        wd = self.app.wd
+        if text is not None:
+            wd.find_element_by_name(contact_data).click()
+            wd.find_element_by_name(contact_data).clear()
+            wd.find_element_by_name(contact_data).send_keys(text)
 
     def edit_contact(self, contact):
         # edit contact
         wd = self.app.wd
         self.app.open_home_page()
-        wd.find_element_by_name("selected[]").click()
+        self.select_first_contact()
         wd.find_element_by_xpath("//*[@id='maintable']/tbody/tr[2]/td[8]/a/img").click()
         # wd.find_element_by_xpath('//img[@src="icons/pencil.png"]').click()
         self.contact_form(contact)
@@ -54,8 +50,12 @@ class ContactHelper:
     def del_first_contact(self):
         wd = self.app.wd
         self.app.open_home_page()
-        wd.find_element_by_name("selected[]").click()
+        self.select_first_contact()
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to_alert().accept()
         wd.find_element_by_link_text("home").click()
         # time.sleep(3)
+
+    def select_first_contact(self):
+        wd = self.app.wd
+        wd.find_element_by_name("selected[]").click()
