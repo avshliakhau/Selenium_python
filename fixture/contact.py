@@ -1,7 +1,7 @@
-import time
+from model.contact import Contact
+
 
 class ContactHelper:
-
     def __init__(self, app):
         self.app = app
 
@@ -18,7 +18,7 @@ class ContactHelper:
         wd.find_element_by_name("theform").click()
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
         # return to contact page
-        wd.find_element_by_link_text("home").click()
+        self.open_home_page()
 
     def contact_form(self, contact):
         wd = self.app.wd
@@ -40,22 +40,28 @@ class ContactHelper:
     def edit_contact(self, contact):
         # edit contact
         wd = self.app.wd
-        self.app.open_home_page()
+        # self.app.open_home_page()
+        self.open_home_page()
         self.select_first_contact()
         wd.find_element_by_xpath("//*[@id='maintable']/tbody/tr[2]/td[8]/a/img").click()
         # wd.find_element_by_xpath('//img[@src="icons/pencil.png"]').click()
         self.contact_form(contact)
         wd.find_element_by_name("update").click()
-        wd.find_element_by_link_text("home").click()
+        self.open_home_page()
 
     def del_first_contact(self):
         wd = self.app.wd
-        self.app.open_home_page()
+        # self.app.open_home_page()
+        self.open_home_page()
         self.select_first_contact()
         wd.find_element_by_xpath("//input[@value='Delete']").click()
-        wd.switch_to_alert().accept()
-        wd.find_element_by_link_text("home").click()
+        wd.switch_to_alert().accept() # закрытие диалогового окна // тест проходит, но всегда пишет оговорку
+        self.open_home_page()
         # time.sleep(3)
+
+    def open_home_page(self):
+        wd = self.app.wd
+        wd.find_element_by_link_text("home").click()
 
     def select_first_contact(self):
         wd = self.app.wd
@@ -63,5 +69,21 @@ class ContactHelper:
 
     def count_contact(self):
         wd = self.app.wd
-        self.app.open_home_page()
+        self.open_home_page()
         return len(wd.find_elements_by_name("selected[]"))
+
+    def get_contact_list(self):
+        wd = self.app.wd
+        self.open_home_page()
+        contacts = []
+        # i = int(self.count_contact())
+        # print(i)
+        for element in wd.find_elements_by_name('entry'):
+            last = element.find_element_by_css_selector('table td:nth-child(2)').text
+            first = element.find_element_by_css_selector('table td:nth-child(3)').text
+            id = element.find_element_by_name("selected[]").get_attribute("value")
+            contacts.append(Contact(id=id, lastname=last, firstname=first))
+        print(contacts)
+        return contacts
+
+

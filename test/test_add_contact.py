@@ -5,15 +5,36 @@ from model.contact import Contact
 
 def test_add_contact1(app):
     # app.session.login(username="admin", password="secret")
-    app.contact.create_contact(Contact(firstname="Kol", lastname="Pol", address="Minsk, Jukova str. 4", mobile="+375296507090", email="serge35@inbox.ru", byear="1995"))
-    # app.session.logout()
+    old_contacts = app.contact.get_contact_list()
+    contact = Contact(firstname = "Iliy", lastname = "Charm", address = "Praha, 8-str. 2C", mobile = "+380351111191", email = "ser35@skoda.cz", byear = "1992")
+    app.contact.create_contact(contact)
+    new_contacts = app.contact.get_contact_list()
+    assert len(old_contacts) + 1 == len(new_contacts)
+    old_contacts.append(contact)
+    # def id_or_max(ct): # функцию для вычисления ключа выносим в model/contact.py
+    #     if ct.id:
+    #         return int(ct.id)
+    #     else:
+    #         return maxsize
+    assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
+    # print (new_contacts)
 
-def test_add_contact2(app):
-    # app.session.login(username="admin", password="secret")
-    app.contact.create_contact(Contact(firstname="Maks", lastname="Second", address="Brest, Moskowskay str. 55", mobile="+375336007000", email="ser35@bk.ru", byear="1990"))
-    # app.session.logout()
+# def test_add_contact2(app):
+#     # app.session.login(username="admin", password="secret")
+#     old_contacts = app.contact.get_contact_list()
+#     contact = Contact(firstname="Nik", lastname="Soap", address="Moskow, Jukova str. 1891", mobile="+375296500000", email="ge44@inbox.ru", byear="1983")
+#     app.contact.create_contact(contact)
+#     new_contacts = app.contact.get_contact_list()
+#     assert len(old_contacts) + 1 == len(new_contacts)
+#     # app.session.logout()
+#
+# def test_add_contact3(app):
+#     # app.session.login(username="admin", password="secret")
+#     old_contacts = app.contact.get_contact_list()
+#     contact = Contact(firstname = "Jon", lastname = "Postman", address = "Hamburg, Moskowskay str. 77", mobile = "+375336088888", email = "res@bk.ru", byear = "1969")
+#     app.contact.create_contact(contact)
+#     new_contacts = app.contact.get_contact_list()
+#     assert len(old_contacts) + 1 == len(new_contacts)
+#     # app.session.logout()
 
-def test_add_contact3(app):
-    # app.session.login(username="admin", password="secret")
-    app.contact.create_contact(Contact(firstname="Ilon", lastname="Mask", address="Frisko, 158-str. 12B", mobile="+380356008899", email="ser35@tesla.us", byear="1981"))
-    # app.session.logout()
+
