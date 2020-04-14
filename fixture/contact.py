@@ -19,6 +19,7 @@ class ContactHelper:
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
         # return to contact page
         self.open_home_page()
+        self.contact_cache = None
 
     def contact_form(self, contact):
         wd = self.app.wd
@@ -48,6 +49,7 @@ class ContactHelper:
         self.contact_form(contact)
         wd.find_element_by_name("update").click()
         self.open_home_page()
+        self.contact_cache = None
 
     def del_first_contact(self):
         wd = self.app.wd
@@ -57,6 +59,7 @@ class ContactHelper:
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         wd.switch_to_alert().accept() # закрытие диалогового окна // тест проходит, но всегда пишет оговорку
         self.open_home_page()
+        self.contact_cache = None
         # time.sleep(3)
 
     def open_home_page(self):
@@ -72,18 +75,19 @@ class ContactHelper:
         self.open_home_page()
         return len(wd.find_elements_by_name("selected[]"))
 
+    contact_cache = None
+
     def get_contact_list(self):
-        wd = self.app.wd
-        self.open_home_page()
-        contacts = []
-        # i = int(self.count_contact())
-        # print(i)
-        for element in wd.find_elements_by_name('entry'):
-            last = element.find_element_by_css_selector('table td:nth-child(2)').text
-            first = element.find_element_by_css_selector('table td:nth-child(3)').text
-            id = element.find_element_by_name("selected[]").get_attribute("value")
-            contacts.append(Contact(id=id, lastname=last, firstname=first))
-        print(contacts)
-        return contacts
+        if self.contact_cache is None:
+            wd = self.app.wd
+            self.open_home_page()
+            self.contact_cache = []
+            for element in wd.find_elements_by_name('entry'):
+                last = element.find_element_by_css_selector('table td:nth-child(2)').text
+                first = element.find_element_by_css_selector('table td:nth-child(3)').text
+                id = element.find_element_by_name("selected[]").get_attribute("value")
+                self.contact_cache.append(Contact(id=id, lastname=last, firstname=first))
+            print(self.contact_cache)
+        return list(self.contact_cache)
 
 

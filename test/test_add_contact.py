@@ -8,8 +8,9 @@ def test_add_contact1(app):
     old_contacts = app.contact.get_contact_list()
     contact = Contact(firstname = "Iliy", lastname = "Charm", address = "Praha, 8-str. 2C", mobile = "+380351111191", email = "ser35@skoda.cz", byear = "1992")
     app.contact.create_contact(contact)
-    new_contacts = app.contact.get_contact_list()
-    assert len(old_contacts) + 1 == len(new_contacts)
+    # assert len(old_contacts) + 1 == len(new_contacts)
+    assert len(old_contacts) + 1 == app.contact.count_contact()
+    new_contacts = app.contact.get_contact_list() # перенесли ниже сравнения длины
     old_contacts.append(contact)
     # def id_or_max(ct): # функцию для вычисления ключа выносим в model/contact.py
     #     if ct.id:
