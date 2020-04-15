@@ -43,9 +43,8 @@ class ContactHelper:
         wd = self.app.wd
         # self.app.open_home_page()
         self.open_home_page()
-        self.select_contact_by_index(index)
-        wd.find_element_by_xpath("//*[@id='maintable']/tbody/tr[2]/td[8]/a/img").click()
-        # wd.find_element_by_xpath('//img[@src="icons/pencil.png"]').click()
+        # self.select_contact_by_index(index)
+        wd.find_elements_by_css_selector('table td:nth-child(8)')[index].click()
         self.contact_form(contact)
         wd.find_element_by_name("update").click()
         self.open_home_page()
