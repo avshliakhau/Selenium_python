@@ -1,5 +1,6 @@
 from model.contact import Contact
-
+import re
+import time
 
 class ContactHelper:
     def __init__(self, app):
@@ -41,8 +42,8 @@ class ContactHelper:
     def edit_contact_by_index(self, index, contact):
         # edit contact
         wd = self.app.wd
-        # self.app.open_home_page()
-        self.open_home_page()
+        self.app.open_home_page()
+        # self.open_home_page()
         # self.select_contact_by_index(index)
         wd.find_elements_by_css_selector('table td:nth-child(8)')[index].click()
         self.contact_form(contact)
@@ -94,8 +95,71 @@ class ContactHelper:
                 last = element.find_element_by_css_selector('table td:nth-child(2)').text
                 first = element.find_element_by_css_selector('table td:nth-child(3)').text
                 id = element.find_element_by_name("selected[]").get_attribute("value")
-                self.contact_cache.append(Contact(id=id, lastname=last, firstname=first))
+                all_phones = element.find_element_by_css_selector('table td:nth-child(6)').text
+                # all_phone = element.find_element_by_css_selector('table td:nth-child(6)').text.splitlines()
+                self.contact_cache.append(Contact(id=id, lastname=last, firstname=first,
+                                                  all_phones_from_home_page=all_phones))
             print(self.contact_cache)
         return list(self.contact_cache)
 
+    def get_contact_info_from_edit_page(self, index):
+        wd = self.app.wd
+        # self.edit_contact_by_index(index)
+        # self.open_contact_view_by_index(index) # Details
+        self.open_view_contact_by_index(index) # Edit
+        id = wd.find_element_by_name('id').get_attribute("value")
+        firstname = wd.find_element_by_name('firstname').get_attribute("value")
+        lastname = wd.find_element_by_name('lastname').get_attribute("value")
+        # address = wd.find_element_by_name('address').get_attribute("value")
+        homephone = wd.find_element_by_name('home').get_attribute("value")
+        mobilephone = wd.find_element_by_name('mobile').get_attribute("value")
+        workphone = wd.find_element_by_name('work').get_attribute("value")
+        fax = wd.find_element_by_name('fax').get_attribute("value")
+        # email = wd.find_elements_by_name('email').get_attribute("value")
+        # email2 = wd.find_elements_by_name('email2').get_attribute("value")
+        # email3 = wd.find_elements_by_name('email3').get_attribute("value")
+        return Contact(id=id, firstname=firstname, lastname=lastname,
+                       homephone=homephone, mobilephone=mobilephone, workphone=workphone, fax=fax)
+        # return Contact(id=id, firstname=firstname, lastname=lastname,
+        #                address=address, homephone=homephone, mobilephone=mobilephone,
+        #                workphone=workphone, fax=fax, email=email, email2=email2, email3=email3)
 
+    def get_contact_from_view_page(self, index):
+        wd = self.app.wd
+        # self.open_view_contact_by_index(index) # Edit
+        self.open_contact_view_by_index(index) # Details
+        text = wd.find_element_by_xpath('//*[@id="content"]').text
+        homephone = re.search("H: (.*)", text).group(1)
+        mobilephone = re.search("M: (.*)", text).group(1)
+        workphone = re.search("W: (.*)", text).group(1)
+        fax = re.search("F: (.*)", text).group(1)
+        return Contact(homephone=homephone, mobilephone=mobilephone, workphone=workphone, fax=fax)
+
+    def open_contact_view_by_index(self, index):
+        wd = self.app.wd
+        self.open_home_page()
+        wd.find_elements_by_css_selector('table td:nth-child(7)')[index].click()
+        # time.sleep(5)
+
+    def open_view_contact_by_index(self, index):
+        wd = self.app.wd
+        self.open_home_page()
+        wd.find_elements_by_css_selector('table td:nth-child(8)')[index].click()
+        # time.sleep(5)
+
+    # def get_contact_list(self):
+    #     if self.contact_cache is None:
+    #         wd = self.app.wd
+    #         self.open_home_page()
+    #         self.contact_cache = []
+    #         for row in wd.find_elements_by_name('entry'):
+    #             cells = row.find_elements_by_name('td')
+    #             last = cells[1].text
+    #             first = cells[2].text
+    #             id = cells[0].find_element_by_name("selected[]").get_attribute("value")
+    #             all_phone = cells[5].text.splitlines()
+    #             self.contact_cache.append(Contact(id=id, lastname=last, firstname=first,
+    #                                               homephone=all_phone[0], mobilephone=all_phone[1],
+    #                                               workphone=all_phone[2]))
+    #         print(self.contact_cache)
+    #     return list(self.contact_cache)
