@@ -1,6 +1,6 @@
 from model.contact import Contact
 import re
-import time
+
 
 class ContactHelper:
     def __init__(self, app):
@@ -28,9 +28,11 @@ class ContactHelper:
         self.type_cont("firstname", contact.firstname)
         self.type_cont("lastname", contact.lastname)
         self.type_cont("address", contact.address)
+        self.type_cont("home", contact.home)
         self.type_cont("mobile", contact.mobile)
+        self.type_cont("work", contact.work)
         self.type_cont("email", contact.email)
-        self.type_cont("byear", contact.byear)
+        # self.type_cont("byear", contact.byear)
 
     def type_cont(self, contact_data, text):
         wd = self.app.wd
@@ -115,15 +117,15 @@ class ContactHelper:
         firstname = wd.find_element_by_name('firstname').get_attribute("value")
         lastname = wd.find_element_by_name('lastname').get_attribute("value")
         address = wd.find_element_by_name('address').text #get_attribute("cols")
-        homephone = wd.find_element_by_name('home').get_attribute("value")
-        mobilephone = wd.find_element_by_name('mobile').get_attribute("value")
-        workphone = wd.find_element_by_name('work').get_attribute("value")
+        home = wd.find_element_by_name('home').get_attribute("value")
+        mobile = wd.find_element_by_name('mobile').get_attribute("value")
+        work = wd.find_element_by_name('work').get_attribute("value")
         fax = wd.find_element_by_name('fax').get_attribute("value")
         email = wd.find_element_by_name('email').get_attribute("value")
         email2 = wd.find_element_by_name('email2').get_attribute("value")
         email3 = wd.find_element_by_name('email3').get_attribute("value")
         return Contact(id=id, firstname=firstname, lastname=lastname, address=address,
-                       homephone=homephone, mobilephone=mobilephone, workphone=workphone, fax=fax,
+                       home=home, mobile=mobile, work=work, fax=fax,
                        email=email, email2=email2, email3=email3)
 
     def get_contact_from_view_page(self, index):# Details страница с деталями контакта
@@ -131,9 +133,9 @@ class ContactHelper:
         # self.open_view_contact_by_index(index) # Edit
         self.open_contact_view_by_index(index) # Details
         text = wd.find_element_by_xpath('//*[@id="content"]').text
-        homephone = re.search("H: (.*)", text).group(1)
-        mobilephone = re.search("M: (.*)", text).group(1)
-        workphone = re.search("W: (.*)", text).group(1)
+        home = re.search("H: (.*)", text).group(1)
+        mobile = re.search("M: (.*)", text).group(1)
+        work = re.search("W: (.*)", text).group(1)
         fax = re.search("F: (.*)", text).group(1)
         email = re.search("/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i (.*@.*)", text)
         # email = re.search("@ (.*@.*)", text)
@@ -141,7 +143,7 @@ class ContactHelper:
         # email2 = re.search("@ (.*@.*)", text)
         email3 = re.search("/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i (.*@.*)", text)
         # email3 = re.search("@ (.*@.*)", text)
-        return Contact(homephone=homephone, mobilephone=mobilephone, workphone=workphone, fax=fax,
+        return Contact(home=home, mobile=mobile, work=work, fax=fax,
                        email=email, email2=email2, email3=email3)
 
     def open_contact_view_by_index(self, index):

@@ -1,41 +1,41 @@
 # -*- coding: utf-8 -*-
-
 from model.contact import Contact
+import pytest
+import random
+import string
 
 
-def test_add_contact1(app):
-    # app.session.login(username="admin", password="secret")
+def random_string(prefix, maxlen):
+    symbols = string.ascii_letters
+    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))])
+
+def random_string_mix(prefix, maxlen):
+    symbols = string.ascii_letters + string.digits
+    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))])
+
+def random_string_dig(prefix, maxlen):
+    symbols = string.digits
+    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))])
+
+testdata = [
+    Contact(firstname=random_string("F_", 8), lastname=random_string("L_", 10),
+            address=random_string_mix("P_", 10), home=random_string_dig("+", 10), mobile=random_string_dig("+", 10),
+            email=(random_string_mix("e", 7) + "@" + random_string_mix("a", 7)+ "." + random_string_mix("b", 4)))
+    for i in range(2)
+    ]
+
+@pytest.mark.parametrize("contact", testdata, ids=[repr(x) for x in testdata])
+def test_add_contact(app, contact):
     old_contacts = app.contact.get_contact_list()
-    contact = Contact(firstname = "Iliy", lastname = "Charm", address = "Praha, 8-str. 2C", mobile = "+380351111191", email = "ser35@skoda.cz", byear = "1992")
+    # contact = Contact(firstname = "Iliy", lastname = "Charm", address = "Praha, 8-str. 2C", mobile = "+380351111191", email = "ser35@skoda.cz", byear = "1992")
     app.contact.create_contact(contact)
     # assert len(old_contacts) + 1 == len(new_contacts)
     assert len(old_contacts) + 1 == app.contact.count_contact()
     new_contacts = app.contact.get_contact_list() # перенесли ниже сравнения длины
     old_contacts.append(contact)
-    # def id_or_max(ct): # функцию для вычисления ключа выносим в model/contact.py
-    #     if ct.id:
-    #         return int(ct.id)
-    #     else:
-    #         return maxsize
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
-    # print (new_contacts)
 
-# def test_add_contact2(app):
-#     # app.session.login(username="admin", password="secret")
-#     old_contacts = app.contact.get_contact_list()
-#     contact = Contact(firstname="Nik", lastname="Soap", address="Moskow, Jukova str. 1891", mobile="+375296500000", email="ge44@inbox.ru", byear="1983")
-#     app.contact.create_contact(contact)
-#     new_contacts = app.contact.get_contact_list()
-#     assert len(old_contacts) + 1 == len(new_contacts)
-#     # app.session.logout()
-#
-# def test_add_contact3(app):
-#     # app.session.login(username="admin", password="secret")
-#     old_contacts = app.contact.get_contact_list()
-#     contact = Contact(firstname = "Jon", lastname = "Postman", address = "Hamburg, Moskowskay str. 77", mobile = "+375336088888", email = "res@bk.ru", byear = "1969")
-#     app.contact.create_contact(contact)
-#     new_contacts = app.contact.get_contact_list()
-#     assert len(old_contacts) + 1 == len(new_contacts)
-#     # app.session.logout()
+    # firstname = "Vlad", lastname = "Pytin", address = "Praha, 99-str. 2C",
+    #         home = "11-11-555", mobile = "333-555-77", work = "557-799",
 
 
