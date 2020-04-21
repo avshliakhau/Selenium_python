@@ -1,38 +1,33 @@
 # -*- coding: utf-8 -*--
-
 from model.group import Group
+import time
+import pytest
+import random
+import string
 
+def random_string(prefix, maxlen):
+    symbols = string.ascii_letters + string.digits
+    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))])
 
-def test_add_group_1(app):
-    # app.session.login(username="admin", password="secret") # убираем лишнюю строку
+testdata = [
+    Group(name=random_string("Group", 10), header=random_string("Head", 15), footer=random_string("Foot", 12))
+    for i in range(4)
+    ]
+
+# testdata = [
+#     Group(name=name, header=header, footer=footer)
+#     for name in ["", random_string("name", 10)]
+#     for header in ["", random_string("header", 15)]
+#     for footer in ["", random_string("footer", 20)]
+#     ]
+
+@pytest.mark.parametrize("group", testdata, ids=[repr(x) for x in testdata])
+def test_add_group(app, group):
     old_groups = app.group.get_group_list()
-    group = Group(name="Group #11", header="Header #11", footer="Footer #11")
     app.group.create(group)
-    # assert len(old_groups) + 1 == len(new_groups)
     assert len(old_groups) + 1 == app.group.count()# вначале сравниваем длины списка старого +1 и длину count и только при совпадении сравниваем сами списки
     new_groups = app.group.get_group_list() # перенесли ниже сравнения длины
     old_groups.append(group)
-    assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max) # в качестве ключа будет использоваться метод Group
-    # app.session.logout() # убираем лишнюю строку
-
-# def test_add_group_2(app):
-#     # app.session.login(username="admin", password="secret") # убираем лишнюю строку
-#     old_groups = app.group.get_group_list()
-#     group = Group(name="Group #22", header="Header #22", footer="Footer #22")
-#     app.group.create(group)
-#     new_groups = app.group.get_group_list()
-#     assert len(old_groups) + 1 == len(new_groups)
-#     old_groups.append(group)
-#     assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
-#     # app.session.logout() # убираем лишнюю строку
-# #
-# def test_add_group_3(app):
-#     # app.session.login(username="admin", password="secret") # убираем лишнюю строку
-#     old_groups = app.group.get_group_list()
-#     group = Group(name="Group #33")
-#     app.group.create(group)
-#     new_groups = app.group.get_group_list()
-#     assert len(old_groups) + 1 == len(new_groups)
-#     old_groups.append(group)
-#     assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max)
-#     # app.session.logout() # убираем лишнюю строку
+    # time.sleep(1)
+    assert sorted(old_groups, key=Group.id_or_max) == sorted(new_groups, key=Group.id_or_max) # в качестве ключа будет использоваться метод из класса Group
+    # time.sleep(1)
