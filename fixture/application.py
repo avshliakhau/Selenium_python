@@ -9,14 +9,16 @@ class Application:
     def __init__(self, browser, base_url):
         if browser == "firefox":
             self.wd = webdriver.Firefox()
+            self.wd.implicitly_wait(1)
         elif browser == "chrome":
             self.wd = webdriver.Chrome()
+            self.wd.implicitly_wait(1)
         elif browser == "ie":
             self.wd = webdriver.Ie()
+            self.wd.implicitly_wait(3)
         else:
             raise ValueError("Unrecognized browser %s" % browser)
-        self.wd = webdriver.Chrome()
-        self.wd.implicitly_wait(2)
+        # self.wd.implicitly_wait(2)
         self.session = SessionHelper(self)
         self.group = GroupHelper(self)
         self.contact = ContactHelper(self)
