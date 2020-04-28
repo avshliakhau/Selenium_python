@@ -1,12 +1,12 @@
 from model.contact import Contact
 
 
-constant = [
+testdata = [
     Contact(firstname="First_1", lastname="Last_1", address="Dom_1", home="tel_home1", mobile="tel_mob1", email="email@bk.ru", email2="1email@bk.ru"),
     Contact(firstname="First_2", lastname="Last_2", address="Dom_2", home="tel_home2", mobile="tel_mob2", email="email@bk.ru", email2="2email@bk.ru")
 ]
 
-# def random_string(prefix, maxlen): #переносим в generator.contact.py
+# def random_string(prefix, maxlen): #переносим в generator.contacts.py
 #     symbols = string.ascii_letters
 #     return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))])
 #

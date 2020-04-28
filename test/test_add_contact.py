@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 from model.contact import Contact
-# from data.contact import testdata
-from data.add_contact import constant as testdata
-import pytest
 
 
-@pytest.mark.parametrize("contact", testdata, ids=[repr(x) for x in testdata])
-def test_add_contact(app, contact):
+# @pytest.mark.parametrize("contact", testdata, ids=[repr(x) for x in testdata])
+def test_add_contact(app, json_contacts):
+    contact = json_contacts
     old_contacts = app.contact.get_contact_list()
     # contact = Contact(firstname = "Iliy", lastname = "Charm", address = "Praha, 8-str. 2C", mobile = "+380351111191", email = "ser35@skoda.cz", byear = "1992")
     app.contact.create_contact(contact)
