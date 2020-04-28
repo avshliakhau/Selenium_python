@@ -2,7 +2,6 @@ from model.group import Group
 import random
 import string
 import os.path
-import json
 import jsonpickle
 import getopt
 import sys
@@ -35,5 +34,8 @@ testdata = [
 file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", f)
 
 with open(file, "w") as out:
-    out.write(jsonpickle.dumps(testdata, indent=2))
-    # out.write(json.dumps(testdata, default=lambda x: x.__dict__, indent=2))
+    jsonpickle.set_encoder_options("json", indent=2) # работает!!!
+    out.write(jsonpickle.encode(testdata)) # работает даже без "set_encoder_options" если добавить indent=2!!!
+    # out.write(jsonpickle.encode(testdata))  # работает = 1 строка!!!
+    # out.write(jsonpickle.dumps(testdata, indent=2))# работает!!!
+    # out.write(json.dumps(testdata, default=lambda x: x.__dict__, indent= #так делать не надо! через jsonpickle
