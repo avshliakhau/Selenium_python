@@ -53,6 +53,21 @@ class ContactHelper:
         self.open_home_page()
         self.contact_cache = None
 
+    def edit_contact_by_id(self, id, contact):
+        # edit contact
+        wd = self.app.wd
+        self.app.open_home_page()
+        self.select_contact_by_id(id)
+        wd.get('input["http://localhost/addressbook/edit.php?id=%s"]' % id)
+        # wd.find_element_by_css_selector("input[value='%s']" % id).click()
+        # wd.find_elements_by_css_selector('table td:nth-child(8)')[
+        #     index].click()
+        # wd.find_element_by_css_selector("input[wd.current_url.endswith('/edit.php?id=%s')]" % id).click()
+        self.contact_form(contact)
+        wd.find_element_by_name("update").click()
+        self.open_home_page()
+        self.contact_cache = None
+
     def edit_contact(self):
         self.edit_contact_by_index(0)
 
@@ -65,7 +80,16 @@ class ContactHelper:
         wd.switch_to_alert().accept() # закрытие диалогового окна // тест проходит, но всегда пишет оговорку
         self.open_home_page()
         self.contact_cache = None
-        # time.sleep(3)
+
+    def del_contact_by_id(self, id):
+        wd = self.app.wd
+        # self.app.open_home_page()
+        self.open_home_page()
+        self.select_contact_by_id(id)
+        wd.find_element_by_xpath("//input[@value='Delete']").click()
+        wd.switch_to_alert().accept() # закрытие диалогового окна // тест проходит, но всегда пишет оговорку
+        self.open_home_page()
+        self.contact_cache = None
 
     def del_first_contact(self):
         wd = self.app.wd
@@ -78,6 +102,11 @@ class ContactHelper:
     def select_contact_by_index(self, index):
         wd = self.app.wd
         wd.find_elements_by_name("selected[]")[index].click()
+
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        # wd.find_elements_by_name("selected[]")[id].click()
+        wd.find_element_by_css_selector("input[value='%s']" % id).click()
 
     def select_first_contact(self):
         self.select_contact_by_index(0)
