@@ -1,5 +1,9 @@
 from model.contact import Contact
+from model.group import Group
+import random
 import re
+import time
+from selenium.webdriver.support.ui import Select
 
 
 class ContactHelper:
@@ -45,8 +49,6 @@ class ContactHelper:
         # edit contact
         wd = self.app.wd
         self.app.open_home_page()
-        # self.open_home_page()
-        # self.select_contact_by_index(index)
         wd.find_elements_by_css_selector('table td:nth-child(8)')[index].click()
         self.contact_form(contact)
         wd.find_element_by_name("update").click()
@@ -58,11 +60,7 @@ class ContactHelper:
         wd = self.app.wd
         self.app.open_home_page()
         self.select_contact_by_id(id)
-        wd.get('input["http://localhost/addressbook/edit.php?id=%s"]' % id)
-        # wd.find_element_by_css_selector("input[value='%s']" % id).click()
-        # wd.find_elements_by_css_selector('table td:nth-child(8)')[
-        #     index].click()
-        # wd.find_element_by_css_selector("input[wd.current_url.endswith('/edit.php?id=%s')]" % id).click()
+        wd.find_element_by_xpath('//a[@href ="edit.php?id=%s"]' % id).click()
         self.contact_form(contact)
         wd.find_element_by_name("update").click()
         self.open_home_page()
