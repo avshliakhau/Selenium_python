@@ -11,26 +11,26 @@ def test_data_ui_db(app, db):
     contact_from_home_page = sorted(app.contact.get_contact_list(), key=Contact.id_or_max) #отсортированная/ главная страница с таблицей
     contact_from_db = sorted(db.get_contact_list(), key=Contact.id_or_max)  # отсортированная DB (база данных)
     for element in range(index):
-        print(contact_from_home_page[element])
-        print(contact_from_db[element])
-        assert contact_from_home_page[element] == contact_from_db[element]#c cортированными списками = получается! и цикл проходит по всем элементам
-
-        assert contact_from_home_page.firstname[element] == contact_from_db.firstname[element]
-        assert contact_from_home_page.lastname[element] == contact_from_db.lastname[element]
-        assert contact_from_home_page.address[element] == contact_from_db.address[element]
-        assert contact_from_home_page.all_phones_from_home_page[element] == merge_phones_like_on_home_page(contact_from_db)[element]
-        assert contact_from_home_page.all_email_from_home_page[element] == merge_email_like_on_home_page(contact_from_db)[element]
+        # assert contact_from_home_page[element] == contact_from_db[element]#c cортированными списками = получается! и цикл проходит по всем элементам
+        assert contact_from_home_page[element].id == contact_from_db[element].id
+        assert contact_from_home_page[element].firstname == contact_from_db[element].firstname
+        assert contact_from_home_page[element].lastname == contact_from_db[element].lastname
+        assert contact_from_home_page[element].address == contact_from_db[element].address
+        assert contact_from_home_page[element].all_phones_from_home_page == merge_phones_like(contact_from_db[element])
+        assert contact_from_home_page[element].all_email_from_home_page == merge_email_like(contact_from_db[element])
+        # print(contact_from_home_page[element].all_phones_from_home_page)
+        # print(contact_from_db[element])
 
 def clear(s):
     return re.sub("[() /-]", "", s) # !!!то что надо вырезать обязательно в квадр скобках, иначе падает!!!
 
-def merge_email_like_on_home_page(contact):
+def merge_email_like(contact):
     return "\n".join(filter(lambda x: x !="",
                             map(lambda x: clear(x),
                                 filter(lambda x: x is not None,
                                 [contact.email, contact.email2, contact.email3]))))
 
-def merge_phones_like_on_home_page(contact):
+def merge_phones_like(contact):
     return "\n".join(filter(lambda x: x !="",
                             map(lambda x: clear(x),
                                 filter(lambda x: x is not None,
