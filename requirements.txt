@@ -1,15 +1,6 @@
 pytest
-pytest_bdd
 selenium
 jsonpickle
 pony
 pymysql
 sys
-pymysql.cursors
-os.path
-importlib
-random
-string
-getopt
-mysql-connector-python-rf
-json
