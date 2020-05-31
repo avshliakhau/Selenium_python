@@ -4,12 +4,12 @@ selenium
 jsonpickle
 pony
 pymysql
-json
+sys
+pymysql.cursors
 os.path
 importlib
 random
 string
 getopt
-sys
-pymysql.cursors
 mysql-connector-python-rf
+json
