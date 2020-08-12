@@ -3,19 +3,23 @@ from model.group import Group
 from fixture.orm import ORMFixture
 import random
 
-db = ORMFixture(host="127.0.0.1", name="addressbook", user="root", password="")
+# db = ORMFixture(host="127.0.0.1", name="addressbook", user="root", password="")
 
-def test_add_contact_in_group(app):
-    if len(db.get_contact_list()) == 0: # предусловие= проверка наличия хотя бы одного контакта
+def test_add_contact_in_group(app, orm):
+    if len(orm.get_group_list()) == 0:
+        app.group.create(Group(name="test_group_create", header="test_header_create", footer="test_footer_create"))
+    group = random.choice(orm.get_group_list())
+    group2 = orm.get_group_list()
+    print("#random-orm.get_group_list = *** ", group)
+    print("#orm.get_group_list = *** ", group2)
+    if len(orm.get_contacts_not_in_group(group)) == 0:
         app.contact.create_contact(Contact(firstname="test_create", lastname="Test_Create"))
-    old_contacts = db.get_contact_list() #
-    contact = random.choice(old_contacts)
-    print(contact)
-    app.contact.add_contact_to_group_by_id(contact.id)
-    new_contacts = db.get_contacts_in_group(Group(id="811"))
-    new_contacts_not = db.get_contacts_not_in_group(Group(id="811"))
-    # print(new_contacts)
-    # print(new_contacts_not)
-    # print(len(new_contacts))
-    if len(old_contacts) == len(db.get_contacts_in_group(Group(id="811"))) + len(db.get_contacts_not_in_group(Group(id="811"))):
-        assert sorted(old_contacts, key=Contact.id_or_max) == sorted((new_contacts + new_contacts_not), key=Contact.id_or_max)
+    contact = random.choice(orm.get_contacts_not_in_group(group))
+    print("#random-orm.get_contacts_not_in_group = *** ", contact)
+    contact2 = orm.get_contacts_not_in_group(group)
+    print("#orm.get_contacts_not_in_group = *** ", contact2)
+    contact3 = orm.get_contacts_in_group(group)
+    print("#orm.get_contacts_in_group = *** ", contact3)
+    app.contact.add_contact_to_group(contact.id, group.id)
+    print(contact.id, group.id)
+    assert contact in orm.get_contacts_in_group(group)

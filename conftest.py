@@ -5,6 +5,7 @@ import os.path
 import importlib
 from fixture.application import Application
 from fixture.db import DbFixture
+from fixture.orm import ORMFixture
 
 fixture = None
 target = None
@@ -43,6 +44,13 @@ def db(request):
     request.addfinalizer(fin)
     return dbfixture
 
+@pytest.fixture(scope='session')
+def orm(request):
+    db_config = load_config(request.config.getoption('--target'))['db']
+    ormfixture = ORMFixture(host=db_config['host'], name=db_config['name'],
+                          user=db_config['user'], password=db_config['password'])
+    return ormfixture
+
 @pytest.fixture
 def check_ui(request):
     return request.config.getoption("--check_ui")
@@ -54,7 +62,7 @@ def stop(request):
         fixture.session.ensure_logout()
         fixture.destroy()
     request.addfinalizer(fin)
-    return fixture
+    # return fixture
 
 def pytest_addoption(parser):
     parser.addoption("--browser", action="store", default="chrome")
@@ -78,18 +86,3 @@ def load_from_module(module):
 def load_from_json(file):
     with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data/%s.json" % file)) as f:
         return jsonpickle.decode(f.read())
-
-
-# @pytest.fixture
-# def app(request):
-#     global fixture
-#     browser = request.config.getoption("--browser")
-#     base_url = request.config.getoption("--baseUrl")
-#     if fixture is None:
-#         fixture = Application(browser=browser, base_url=base_url)
-#     else:
-#         if not fixture.is_valid:
-#             fixture = Application(browser=browser, base_url=base_url)
-#     fixture.session.ensure_login(username="admin", password="secret")
-#     # fixture.session.login(username="admin", password="secret")
-#     return fixture

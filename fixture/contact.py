@@ -103,7 +103,7 @@ class ContactHelper:
 
     def select_contact_by_id(self, id):
         wd = self.app.wd
-        # wd.find_elements_by_name("selected[]")[id].click()
+        # wd.find_elements_by_name("selected[]")[id].click()# раскомментировал и закомментировал 107
         wd.find_element_by_css_selector("input[value='%s']" % id).click()
 
     def select_first_contact(self):
@@ -116,48 +116,41 @@ class ContactHelper:
 
     contact_cache = None
 
-    def add_contact_to_group_by_id(self, contact_id):
-        wd = self.app.wd
-        self.open_home_page()
-        self.select_contact_by_id(contact_id)
-        group_id = 811
-        # time.sleep(3)
-        wd.find_element_by_css_selector("select[name='to_group']").click()  #
-        # time.sleep(5)
-        wd.find_element_by_css_selector("select[name='to_group']>option[value='%s']" % group_id).click()
-        # time.sleep(5)
-        wd.find_element_by_css_selector("input[name='add']").click() # работает
-        # time.sleep(5)
-        wd.find_element_by_xpath('//*[@id="content"]/div/i/a').click()
-        # time.sleep(5)
-        self.contact_cache = None
+    # def open_home_page_in_group(self):
+    #     wd = self.app.wd
+    #     wd.find_element_by_link_text("home").click()
+    #     wd.find_element_by_css_selector("select[name='group']").click()  #
+    #     time.sleep(3)
+    #     group_id = 811
+    #     wd.find_element_by_css_selector(
+    #         "select[name='group']>option[value='%s']" % group_id).click()
 
-    def del_contact_from_group_by_id(self, contact_id):
-        wd = self.app.wd
-        self.open_home_page_in_group()
-        group_id = 811
-        wd.find_element_by_css_selector("select[name='group']").click()  #
-        time.sleep(3)
-        wd.find_element_by_css_selector(
-            "select[name='group']>option[value='%s']" % group_id).click()
-        self.select_contact_by_id(contact_id)
-        time.sleep(5)
-        wd.find_element_by_css_selector("input[name='remove']").click()  # работает
-        time.sleep(5)
-        wd.find_element_by_xpath('//*[@id="content"]/div/i/a').click()
-        time.sleep(5)
-        self.contact_cache = None
+    # def open_home_page_in_none_group(self):
+    #     wd = self.app.wd
+    #     wd.find_element_by_link_text("home").click()
+    #     wd.find_element_by_css_selector("select[name='group']").click()  #
+    #     time.sleep(3)
+    #     wd.find_element_by_css_selector(
+    #         "select[name='group']>option[value='[none]']").click()
 
-    def open_home_page_in_group(self):
-        wd = self.app.wd
-        wd.find_element_by_link_text("home").click()
-        wd.find_element_by_css_selector("select[name='group']").click()  #
-        time.sleep(3)
-        group_id = 811
-        wd.find_element_by_css_selector(
-            "select[name='group']>option[value='%s']" % group_id).click()
+    # def get_contact_list_in_none_group(self):  # Страница домашняя группы с таблицей
+    #     if self.contact_cache is None:
+    #         wd = self.app.wd
+    #         self.open_home_page_in_none_group()
+    #         self.contact_cache = []
+    #         for element in wd.find_elements_by_name('entry'):
+    #             last = element.find_element_by_css_selector('table td:nth-child(2)').text
+    #             first = element.find_element_by_css_selector('table td:nth-child(3)').text
+    #             address = element.find_element_by_css_selector('table td:nth-child(4)').text
+    #             id = element.find_element_by_name("selected[]").get_attribute("value")
+    #             all_phones = element.find_element_by_css_selector('table td:nth-child(6)').text
+    #             all_email = element.find_element_by_css_selector('table td:nth-child(5)').text
+    #             self.contact_cache.append(Contact(id=id, lastname=last, firstname=first,
+    #                         address=address, all_phones_from_home_page=all_phones, all_email_from_home_page=all_email))
+    #         # print(self.contact_cache)
+    #     return list(self.contact_cache)
 
-    def get_contact_list_in_group(self):  # Страница домашняя группы с таблицей
+    def get_contact_list_in_group(self):  # Страница домашняя группы с таблицей#
         if self.contact_cache is None:
             wd = self.app.wd
             self.open_home_page_in_group()
@@ -243,19 +236,14 @@ class ContactHelper:
         wd.find_elements_by_css_selector('table td:nth-child(8)')[index].click()
         # time.sleep(5)
 
-    # def get_contact_list(self):
-    #     if self.contact_cache is None:
-    #         wd = self.app.wd
-    #         self.open_home_page()
-    #         self.contact_cache = []
-    #         for row in wd.find_elements_by_name('entry'):
-    #             cells = row.find_elements_by_name('td')
-    #             last = cells[1].text
-    #             first = cells[2].text
-    #             id = cells[0].find_element_by_name("selected[]").get_attribute("value")
-    #             all_phone = cells[5].text.splitlines()
-    #             self.contact_cache.append(Contact(id=id, lastname=last, firstname=first,
-    #                                               homephone=all_phone[0], mobilephone=all_phone[1],
-    #                                               workphone=all_phone[2]))
-    #         print(self.contact_cache)
-    #     return list(self.contact_cache)
+    def select_from_dropdown_by_value(self, wd, menu_name, value):
+        select = Select(wd.find_element_by_name(menu_name))
+        select.select_by_value(value)
+
+    def add_contact_to_group(self, id, group_id):
+        wd = self.app.wd
+        self.open_home_page()
+        self.select_contact_by_id(id)
+        self.select_from_dropdown_by_value(wd, 'to_group', group_id)
+        wd.find_element_by_name('add').click()
+        self.open_home_page()
