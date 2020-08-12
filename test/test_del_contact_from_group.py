@@ -3,23 +3,18 @@ from model.group import Group
 from fixture.orm import ORMFixture
 import random
 
-db = ORMFixture(host="127.0.0.1", name="addressbook", user="root", password="")
+# db = ORMFixture(host="127.0.0.1", name="addressbook", user="root", password="")
 
-def test_del_contact_from_group(app):
-    old_contacts = db.get_contact_list() #
-    contact = random.choice(old_contacts)
-    if len(db.get_contacts_in_group(Group(id="811"))) == 0:
-        app.contact.add_contact_to_group_by_id(contact.id)
-        print(len(db.get_contacts_in_group(Group(id="811"))))
-    old_contacts_in_group = db.get_contacts_in_group(Group(id="811"))#
-    contact = random.choice(old_contacts_in_group)
-    print(contact)
-    app.contact.del_contact_from_group_by_id(contact.id)
-    new_contacts = db.get_contacts_in_group(Group(id="811"))
-    new_contacts_not = db.get_contacts_not_in_group(Group(id="811"))
-    # print(new_contacts)
-    # print(new_contacts_not)
-    # print(len(new_contacts))
-    assert len(old_contacts_in_group) - 1 == len(new_contacts)
-    if len(old_contacts) == len(db.get_contacts_in_group(Group(id="811"))) + len(db.get_contacts_not_in_group(Group(id="811"))):
-        assert sorted(old_contacts, key=Contact.id_or_max) == sorted((new_contacts + new_contacts_not), key=Contact.id_or_max)
+def test_del_contact_from_group(app, orm):
+    if len(orm.get_group_list()) == 0:
+        app.group.create(Group(name="test_group_create", header="test_header_create", footer="test_footer_create"))
+    group = random.choice(orm.get_group_list())
+    if len(orm.get_contact_list()) == 0:
+        app.contact.create_contact(Contact(firstname="test_create", lastname="Test_Create"))
+    if len(orm.get_contacts_in_group(group)) == 0:
+        contact = random.choice(orm.get_contact_list())
+        app.contact.add_contact_to_group(contact.id, group.id)
+    else:
+        contact = random.choice(orm.get_contacts_in_group(group))
+    app.contact.del_contact_from_group(contact.id, group.id)
+    assert contact in orm.get_contacts_not_in_group(group)
