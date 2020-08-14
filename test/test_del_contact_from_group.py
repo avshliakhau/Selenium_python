@@ -1,6 +1,6 @@
 from model.contact import Contact
 from model.group import Group
-from fixture.orm import ORMFixture
+# from fixture.orm import ORMFixture
 import random
 
 # db = ORMFixture(host="127.0.0.1", name="addressbook", user="root", password="")
